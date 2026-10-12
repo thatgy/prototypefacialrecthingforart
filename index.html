@@ -1,192 +1,503 @@
 <!DOCTYPE html>
 <html lang="en-US">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Face Studio — Blender Asset Viewer</title>
-<style>
-:root{color-scheme:dark;font-family:Inter,Arial,sans-serif;background:#101217;color:#e7e8ed}
-*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden}
-#app{display:grid;grid-template-columns:320px minmax(0,1fr);height:100vh}
-#panel{padding:24px 20px;overflow-y:auto;background:#191d23;border-right:1px solid #30363e}
-h1{font-size:21px;margin:0 0 5px;font-weight:650}p{font-size:12px;color:#99a5af;line-height:1.55;margin:4px 0 18px}
-h2{font-size:11px;text-transform:uppercase;color:#9ba4b3;letter-spacing:1.5px;border-top:1px solid #363b43;padding-top:14px;margin-top:18px}
-label{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;margin:11px 0 4px}
-output{color:#c9d0d7;font-variant-numeric:tabular-nums}input[type=range]{width:100%;height:15px;accent-color:#c9a48f}
-input[type=color]{height:28px;width:57px;background:none;border:0;padding:0;cursor:pointer}
-.color{display:flex;justify-content:space-between;align-items:center;margin:10px 0;font-size:12px}
-#stage{position:relative;overflow:hidden;background:radial-gradient(circle at 50% 40%,#333b48,#111720)}
-#status{position:absolute;top:16px;left:16px;color:#bdc6cd;background:#141b24a8;padding:10px;border-radius:5px;font-size:12px;max-width:70%;line-height:1.6}
-#hint{position:absolute;bottom:16px;left:16px;font-size:12px;color:#9aa1ae}
-button{cursor:pointer;border:1px solid #555e68;color:#e4e9f1;background:#303943;border-radius:6px;padding:9px 13px;font-size:12px}
-.buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}button:hover{background:#3e4751}
-code{color:#e3c3ad}@media(max-width:680px){#app{grid-template-columns:180px 1fr}#panel{padding:13px}h1{font-size:16px}}
-</style>
-<script type="importmap">{
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Face Studio — Blender Asset Viewer</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Inter, Arial, sans-serif;
+        background: #101217;
+        color: #e7e8ed
+      }
+
+      * {
+        box-sizing: border-box
+      }
+
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden
+      }
+
+      #app {
+        display: grid;
+        grid-template-columns: 320px minmax(0, 1fr);
+        height: 100vh
+      }
+
+      #panel {
+        padding: 24px 20px;
+        overflow-y: auto;
+        background: #191d23;
+        border-right: 1px solid #30363e
+      }
+
+      h1 {
+        font-size: 21px;
+        margin: 0 0 5px;
+        font-weight: 650
+      }
+
+      p {
+        font-size: 12px;
+        color: #99a5af;
+        line-height: 1.55;
+        margin: 4px 0 18px
+      }
+
+      h2 {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #9ba4b3;
+        letter-spacing: 1.5px;
+        border-top: 1px solid #363b43;
+        padding-top: 14px;
+        margin-top: 18px
+      }
+
+      label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 12px;
+        margin: 11px 0 4px
+      }
+
+      output {
+        color: #c9d0d7;
+        font-variant-numeric: tabular-nums
+      }
+
+      input[type=range] {
+        width: 100%;
+        height: 15px;
+        accent-color: #c9a48f
+      }
+
+      input[type=color] {
+        height: 28px;
+        width: 57px;
+        background: none;
+        border: 0;
+        padding: 0;
+        cursor: pointer
+      }
+
+      .color {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 10px 0;
+        font-size: 12px
+      }
+
+      #stage {
+        position: relative;
+        overflow: hidden;
+        background: radial-gradient(circle at 50% 40%, #333b48, #111720)
+      }
+
+      #status {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        color: #bdc6cd;
+        background: #141b24a8;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        max-width: 70%;
+        line-height: 1.6
+      }
+
+      #hint {
+        position: absolute;
+        bottom: 16px;
+        left: 16px;
+        font-size: 12px;
+        color: #9aa1ae
+      }
+
+      button {
+        cursor: pointer;
+        border: 1px solid #555e68;
+        color: #e4e9f1;
+        background: #303943;
+        border-radius: 6px;
+        padding: 9px 13px;
+        font-size: 12px
+      }
+
+      .buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 20px
+      }
+
+      button:hover {
+        background: #3e4751
+      }
+
+      code {
+        color: #e3c3ad
+      }
+
+      @media(max-width:680px) {
+        #app {
+          grid-template-columns: 180px 1fr
+        }
+
+        #panel {
+          padding: 13px
+        }
+
+        h1 {
+          font-size: 16px
+        }
+      }
+    </style>
+    <script type="importmap">{
   "imports":{
     "three":"https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js",
     "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/"
   }
 }</script>
-</head>
-<body>
-<div id="app"><aside id="panel">
-<h1>Face Studio</h1>
-<p>Blender-authored facial geometry · texture-based materials · editable morphs</p>
-<div class="color">Skin tone <input id="skc" type="color" value="#c4967c"></div>
-<div class="color">Iris tint <input id="cl" type="color" value="#ffffff"></div>
-<div class="color">Hair tone <input id="hairc" type="color" value="#2e211c"></div>
-<h2>Face structure</h2>
-<label>Jaw width <output id="jawOut">1.00</output></label><input id="jaw" type="range" min="0.78" max="1.28" step="0.01" value="1">
-<label>Eye spacing <output id="eyedistOut">0.58</output></label><input id="eyedist" type="range" min="0.46" max="0.74" step="0.01" value="0.58">
-<label>Eye size <output id="esizeOut">1.00</output></label><input id="esize" type="range" min="0.82" max="1.18" step="0.01" value="1">
-<label>Nose width <output id="nosewOut">1.00</output></label><input id="nosew" type="range" min="0.70" max="1.32" step="0.01" value="1">
-<label>Nose depth <output id="nosedOut">1.00</output></label><input id="nosed" type="range" min="0.65" max="1.40" step="0.01" value="1">
-<label>Lip width <output id="lipwOut">1.00</output></label><input id="lipw" type="range" min="0.75" max="1.25" step="0.01" value="1">
-<label>Lip height <output id="liphOut">1.00</output></label><input id="liph" type="range" min="0.70" max="1.30" step="0.01" value="1">
-<label>Ear bend <output id="ebendOut">0.00</output></label><input id="ebend" type="range" min="-0.22" max="0.22" step="0.01" value="0">
-<label>Hair scale <output id="hairsOut">1.00</output></label><input id="hairs" type="range" min="0.89" max="1.10" step="0.01" value="1">
-<div class="buttons"><button id="reset">Reset</button><button id="png">Save PNG</button></div>
-<p>Geometry sliders move Blender objects or exported morph targets. To permanently change the base mesh, edit <code>config/face.json</code> and rebuild.</p>
-</aside><main id="stage"><div id="status">Loading textured GLB…</div><div id="hint">Drag to rotate · wheel to zoom</div></main></div>
-<script type="module">
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+  </head>
+  <body>
+    <div id="app">
+      <aside id="panel">
+        <h1>Face Studio</h1>
+        <p>Blender-authored facial geometry · texture-based materials · editable morphs</p>
+        <div class="color">Skin tone <input id="skc" type="color" value="#c4967c"></div>
+        <div class="color">Iris tint <input id="cl" type="color" value="#ffffff"></div>
+        <div class="color">Hair tone <input id="hairc" type="color" value="#2e211c"></div>
+        <h2>Face structure</h2>
+        <label>Jaw width <output id="jawOut">1.00</output></label><input id="jaw" type="range" min="0.78" max="1.28" step="0.01" value="1">
+        <label>Eye spacing <output id="eyedistOut">0.58</output></label><input id="eyedist" type="range" min="0.46" max="0.74" step="0.01" value="0.58">
+        <label>Eye size <output id="esizeOut">1.00</output></label><input id="esize" type="range" min="0.82" max="1.18" step="0.01" value="1">
+        <label>Nose width <output id="nosewOut">1.00</output></label><input id="nosew" type="range" min="0.70" max="1.32" step="0.01" value="1">
+        <label>Nose depth <output id="nosedOut">1.00</output></label><input id="nosed" type="range" min="0.65" max="1.40" step="0.01" value="1">
+        <label>Lip width <output id="lipwOut">1.00</output></label><input id="lipw" type="range" min="0.75" max="1.25" step="0.01" value="1">
+        <label>Lip height <output id="liphOut">1.00</output></label><input id="liph" type="range" min="0.70" max="1.30" step="0.01" value="1">
+        <label>Ear bend <output id="ebendOut">0.00</output></label><input id="ebend" type="range" min="-0.22" max="0.22" step="0.01" value="0">
+        <label>Hair scale <output id="hairsOut">1.00</output></label><input id="hairs" type="range" min="0.89" max="1.10" step="0.01" value="1">
+        <div class="buttons"><button id="reset">Reset</button><button id="png">Save PNG</button></div>
+        <p>Geometry sliders move Blender objects or exported morph targets. To permanently change the base mesh, edit <code>config/face.json</code> and rebuild.</p>
+      </aside>
+      <main id="stage">
+        <div id="status">Loading textured GLB…</div>
+        <div id="hint">Drag to rotate · wheel to zoom</div>
+      </main>
+    </div>
+    <script type="module">
+      import * as THREE from 'three';
+      import {
+        GLTFLoader
+      } from 'three/addons/loaders/GLTFLoader.js';
+      import {
+        OrbitControls
+      } from 'three/addons/controls/OrbitControls.js';
 
-// Intentionally ES5-style object/prototype architecture, matching original Face API.
-var scene, camera, renderer, controls, face, head, attr;
-var r_ear,l_ear,reye,leye,eyedist=.58,edepth=0,cl=0xffffff,h=0;
-var ebend=0,esize=1,edroop=0,skc=0xc4967c,hairc=0x2e211c,hairs=1;
-var stage=document.getElementById('stage'),status=document.getElementById('status');
+      // Intentionally ES5-style object/prototype architecture, matching original Face API.
+      var scene, camera, renderer, controls, face, head, attr;
+      var r_ear, l_ear, reye, leye, eyedist = .58,
+        edepth = 0,
+        cl = 0xffffff,
+        h = 0;
+      var ebend = 0,
+        esize = 1,
+        edroop = 0,
+        skc = 0xc4967c,
+        hairc = 0x2e211c,
+        hairs = 1;
+      var stage = document.getElementById('stage'),
+        status = document.getElementById('status');
 
-var Face=function(model){
-  var self=new THREE.Group();
-  Object.setPrototypeOf(self,Face.prototype);
-  self.name='Face_wrapper';self.add(model);
-  self.root=model.getObjectByName('Face')||model;
-  self.attr={face:self,eyes:self.root.getObjectByName('eyes'),mouth:self.root.getObjectByName('mouth'),
-    nose:self.root.getObjectByName('nose'),hair:self.root.getObjectByName('hair'),ears:self.root.getObjectByName('ears')};
-  self.head=self.root.getObjectByName('head');self.leye=self.root.getObjectByName('left_eye');self.reye=self.root.getObjectByName('right_eye');
-  self.l_ear=self.root.getObjectByName('left_ear');self.r_ear=self.root.getObjectByName('right_ear');
-  self.mat={};self.root.traverse(function(obj){
-    if(obj.isMesh&&obj.material){self.mat[obj.material.name]=obj.material;}
-  });
-  self.eyedist=.58;self.esize=1;self.hairs=1;self.skc=0xc4967c;self.cl=0xffffff;self.hairc=0x2e211c;
-  head=self.head;attr=self.attr;l_ear=self.l_ear;r_ear=self.r_ear;leye=self.leye;reye=self.reye;
-  return self;
-};
-Face.prototype=Object.create(THREE.Group.prototype);
-Face.prototype.constructor=Face;
-Face.prototype.tint=function(name,hex,base){
-  var m=this.mat[name];if(!m){return;}
-  if(base){
-    // Texture already has Blender's starting color baked into its GLB map.
-    var c=new THREE.Color(hex),b=new THREE.Color(base);
-    m.color.setRGB(c.r/Math.max(b.r,.008),c.g/Math.max(b.g,.008),c.b/Math.max(b.b,.008));
-  } else {m.color.setHex(hex);}
-  m.needsUpdate=true;
-};
-Face.prototype.set_skin=function(hex){
-  this.skc=skc=hex;this.tint('mat_sk',hex,0xc4967c);
-};
-Face.prototype.set_eyes=function(hex){
-  this.cl=cl=hex;this.tint('mat_ir',hex,0xffffff);
-};
-Face.prototype.set_hair=function(hex){
-  this.hairc=hairc=hex;this.tint('mat_hr',hex,0x2e211c);
-  this.tint('mat_brow',hex);this.tint('mat_hr_warm',hex);
-  this.tint('mat_scalp',hex);
-};
-Face.prototype.morph=function(key,value,delta){
-  if(!this.head||!this.head.morphTargetDictionary){return;}
-  var i=this.head.morphTargetDictionary[key];
-  if(i!==undefined){this.head.morphTargetInfluences[i]=(value-1)/delta;}
-};
-Face.prototype.set_jaw_width=function(v){this.morph('jaw_width',v,.35);};
-Face.prototype.set_eye_spacing=function(v){
-  this.eyedist=eyedist=v;
-  if(this.leye){this.leye.position.x=-(v-.58)/2;}
-  if(this.reye){this.reye.position.x=(v-.58)/2;}
-};
-Face.prototype.set_eye_size=function(v){
-  this.esize=esize=v;
-  if(this.leye){this.leye.scale.setScalar(v);this.leye.position.x=(v-1)*.29-(this.eyedist-.58)/2;}
-  if(this.reye){this.reye.scale.setScalar(v);this.reye.position.x=-(v-1)*.29+(this.eyedist-.58)/2;}
-};
-Face.prototype.set_nose_shape=function(width,height,depth){
-  this.morph('nose_width',width,.40);this.morph('nose_depth',depth,.45);
-  if(this.attr.nose){this.attr.nose.scale.set(width,1,height);this.attr.nose.position.y=(-.46)*(1-height);}
-};
-Face.prototype.set_lip_shape=function(width,height,depth){
-  var m=this.attr.mouth;
-  if(m){m.scale.set(width,height,depth||1);m.position.y=(-.648)*(1-height);}
-};
-Face.prototype.set_ear_shape=function(bend,droop){
-  this.ebend=ebend=bend;this.edroop=edroop=droop;
-  if(this.l_ear){this.l_ear.rotation.z=bend;this.l_ear.position.y=droop;}
-  if(this.r_ear){this.r_ear.rotation.z=-bend;this.r_ear.position.y=droop;}
-};
-Face.prototype.set_hair_shape=function(v){
-  this.hairs=hairs=v;
-  if(this.attr.hair){this.attr.hair.scale.setScalar(v);this.attr.hair.position.y=(1-v)*.50;}
-};
-Face.prototype.update_all=function(){
-  this.set_eye_spacing(this.eyedist);this.set_eye_size(this.esize);this.set_hair_shape(this.hairs);
-};
+      var Face = function (model) {
+        var self = new THREE.Group();
+        Object.setPrototypeOf(self, Face.prototype);
+        self.name = 'Face_wrapper';
+        self.add(model);
+        self.root = model.getObjectByName('Face') || model;
+        self.attr = {
+          face: self,
+          eyes: self.root.getObjectByName('eyes'),
+          mouth: self.root.getObjectByName('mouth'),
+          nose: self.root.getObjectByName('nose'),
+          hair: self.root.getObjectByName('hair'),
+          ears: self.root.getObjectByName('ears')
+        };
+        self.head = self.root.getObjectByName('head');
+        self.leye = self.root.getObjectByName('left_eye');
+        self.reye = self.root.getObjectByName('right_eye');
+        self.l_ear = self.root.getObjectByName('left_ear');
+        self.r_ear = self.root.getObjectByName('right_ear');
+        self.mat = {};
+        self.root.traverse(function (obj) {
+          if (obj.isMesh && obj.material) {
+            self.mat[obj.material.name] = obj.material;
+          }
+        });
+        self.eyedist = .58;
+        self.esize = 1;
+        self.hairs = 1;
+        self.skc = 0xc4967c;
+        self.cl = 0xffffff;
+        self.hairc = 0x2e211c;
+        head = self.head;
+        attr = self.attr;
+        l_ear = self.l_ear;
+        r_ear = self.r_ear;
+        leye = self.leye;
+        reye = self.reye;
+        return self;
+      };
+      Face.prototype = Object.create(THREE.Group.prototype);
+      Face.prototype.constructor = Face;
+      Face.prototype.tint = function (name, hex, base) {
+        var m = this.mat[name];
+        if (!m) {
+          return;
+        }
+        if (base) {
+          // Texture already has Blender's starting color baked into its GLB map.
+          var c = new THREE.Color(hex),
+            b = new THREE.Color(base);
+          m.color.setRGB(c.r / Math.max(b.r, .008), c.g / Math.max(b.g, .008), c.b / Math.max(b.b, .008));
+        } else {
+          m.color.setHex(hex);
+        }
+        m.needsUpdate = true;
+      };
+      Face.prototype.set_skin = function (hex) {
+        this.skc = skc = hex;
+        this.tint('mat_sk', hex, 0xc4967c);
+      };
+      Face.prototype.set_eyes = function (hex) {
+        this.cl = cl = hex;
+        this.tint('mat_ir', hex, 0xffffff);
+      };
+      Face.prototype.set_hair = function (hex) {
+        this.hairc = hairc = hex;
+        this.tint('mat_hr', hex, 0x2e211c);
+        this.tint('mat_brow', hex);
+        this.tint('mat_hr_warm', hex);
+        this.tint('mat_scalp', hex);
+      };
+      Face.prototype.morph = function (key, value, delta) {
+        if (!this.head || !this.head.morphTargetDictionary) {
+          return;
+        }
+        var i = this.head.morphTargetDictionary[key];
+        if (i !== undefined) {
+          this.head.morphTargetInfluences[i] = (value - 1) / delta;
+        }
+      };
+      Face.prototype.set_jaw_width = function (v) {
+        this.morph('jaw_width', v, .35);
+      };
+      Face.prototype.set_eye_spacing = function (v) {
+        this.eyedist = eyedist = v;
+        if (this.leye) {
+          this.leye.position.x = -(v - .58) / 2;
+        }
+        if (this.reye) {
+          this.reye.position.x = (v - .58) / 2;
+        }
+      };
+      Face.prototype.set_eye_size = function (v) {
+        this.esize = esize = v;
+        if (this.leye) {
+          this.leye.scale.setScalar(v);
+          this.leye.position.x = (v - 1) * .29 - (this.eyedist - .58) / 2;
+        }
+        if (this.reye) {
+          this.reye.scale.setScalar(v);
+          this.reye.position.x = -(v - 1) * .29 + (this.eyedist - .58) / 2;
+        }
+      };
+      Face.prototype.set_nose_shape = function (width, height, depth) {
+        this.morph('nose_width', width, .40);
+        this.morph('nose_depth', depth, .45);
+        if (this.attr.nose) {
+          this.attr.nose.scale.set(width, 1, height);
+          this.attr.nose.position.y = (-.46) * (1 - height);
+        }
+      };
+      Face.prototype.set_lip_shape = function (width, height, depth) {
+        var m = this.attr.mouth;
+        if (m) {
+          m.scale.set(width, height, depth || 1);
+          m.position.y = (-.648) * (1 - height);
+        }
+      };
+      Face.prototype.set_ear_shape = function (bend, droop) {
+        this.ebend = ebend = bend;
+        this.edroop = edroop = droop;
+        if (this.l_ear) {
+          this.l_ear.rotation.z = bend;
+          this.l_ear.position.y = droop;
+        }
+        if (this.r_ear) {
+          this.r_ear.rotation.z = -bend;
+          this.r_ear.position.y = droop;
+        }
+      };
+      Face.prototype.set_hair_shape = function (v) {
+        this.hairs = hairs = v;
+        if (this.attr.hair) {
+          this.attr.hair.scale.setScalar(v);
+          this.attr.hair.position.y = (1 - v) * .50;
+        }
+      };
+      Face.prototype.update_all = function () {
+        this.set_eye_spacing(this.eyedist);
+        this.set_eye_size(this.esize);
+        this.set_hair_shape(this.hairs);
+      };
 
-scene=new THREE.Scene();scene.background=new THREE.Color('#191d25');
-camera=new THREE.PerspectiveCamera(34,1,.02,100);camera.position.set(.4,.1,4.65);
-renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
-renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
-renderer.outputColorSpace=THREE.SRGBColorSpace;
-renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
-stage.insertBefore(renderer.domElement,stage.firstChild);
-controls=new OrbitControls(camera,renderer.domElement);controls.target.set(0,0,0);
-controls.minDistance=2.6;controls.maxDistance=8.5;controls.enableDamping=true;controls.update();
-scene.add(new THREE.HemisphereLight(0xe3ecff,0x40332f,1.45));
-var key=new THREE.DirectionalLight(0xffe2cc,2.4);key.position.set(-2,3,5);scene.add(key);
-var fill=new THREE.DirectionalLight(0xc8d9ff,1.3);fill.position.set(3,1,3);scene.add(fill);
-var rim=new THREE.DirectionalLight(0xffdbc7,1.8);rim.position.set(1,4,-2);scene.add(rim);
-var redraw=function(){requestAnimationFrame(redraw);controls.update();renderer.render(scene,camera);};
-var resize=function(){var w=stage.clientWidth,h=stage.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h);};
-window.addEventListener('resize',resize);resize();redraw();
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color('#191d25');
+      camera = new THREE.PerspectiveCamera(34, 1, .02, 100);
+      camera.position.set(.4, .1, 4.65);
+      renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        preserveDrawingBuffer: true
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.08;
+      stage.insertBefore(renderer.domElement, stage.firstChild);
+      controls = new OrbitControls(camera, renderer.domElement);
+      controls.target.set(0, 0, 0);
+      controls.minDistance = 2.6;
+      controls.maxDistance = 8.5;
+      controls.enableDamping = true;
+      controls.update();
+      scene.add(new THREE.HemisphereLight(0xe3ecff, 0x40332f, 1.45));
+      var key = new THREE.DirectionalLight(0xffe2cc, 2.4);
+      key.position.set(-2, 3, 5);
+      scene.add(key);
+      var fill = new THREE.DirectionalLight(0xc8d9ff, 1.3);
+      fill.position.set(3, 1, 3);
+      scene.add(fill);
+      var rim = new THREE.DirectionalLight(0xffdbc7, 1.8);
+      rim.position.set(1, 4, -2);
+      scene.add(rim);
+      var redraw = function () {
+        requestAnimationFrame(redraw);
+        controls.update();
+        renderer.render(scene, camera);
+      };
+      var resize = function () {
+        var w = stage.clientWidth,
+          h = stage.clientHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      };
+      window.addEventListener('resize', resize);
+      resize();
+      redraw();
 
-var binding={
-  jaw:function(v){face.set_jaw_width(v);},eyedist:function(v){face.set_eye_spacing(v);face.set_eye_size(face.esize);},
-  esize:function(v){face.set_eye_size(v);},
-  nosew:function(v){face.set_nose_shape(v,1,parseFloat(document.getElementById('nosed').value));},
-  nosed:function(v){face.set_nose_shape(parseFloat(document.getElementById('nosew').value),1,v);},
-  lipw:function(v){face.set_lip_shape(v,parseFloat(document.getElementById('liph').value),1);},
-  liph:function(v){face.set_lip_shape(parseFloat(document.getElementById('lipw').value),v,1);},
-  ebend:function(v){face.set_ear_shape(v,0);},hairs:function(v){face.set_hair_shape(v);}
-};
-var sliders=['jaw','eyedist','esize','nosew','nosed','lipw','liph','ebend','hairs'];
-var setField=function(k){
-  var el=document.getElementById(k),v=parseFloat(el.value);
-  document.getElementById(k+'Out').textContent=v.toFixed(2);
-  if(face){binding[k](v);}
-};
-sliders.forEach(function(k){document.getElementById(k).addEventListener('input',function(){setField(k);});});
-[['skc','set_skin'],['cl','set_eyes'],['hairc','set_hair']].forEach(function(a){
-  document.getElementById(a[0]).addEventListener('input',function(e){if(face){face[a[1]](parseInt(e.target.value.slice(1),16));}});
-});
-document.getElementById('reset').addEventListener('click',function(){
-  var d={jaw:1,eyedist:.58,esize:1,nosew:1,nosed:1,lipw:1,liph:1,ebend:0,hairs:1};
-  Object.keys(d).forEach(function(k){document.getElementById(k).value=d[k];setField(k);});
-});
-document.getElementById('png').addEventListener('click',function(){
-  renderer.render(scene,camera);
-  var a=document.createElement('a');a.download='face-studio.png';a.href=renderer.domElement.toDataURL('image/png');a.click();
-});
-new GLTFLoader().load('exports/photoreal_face_template.glb',function(gltf){
-  face=new Face(gltf.scene);scene.add(face);
-  status.textContent='Loaded Blender model · '+gltf.scene.children.length+' root objects · drag to rotate';
-},function(ev){
-  if(ev.total){status.textContent='Loading geometry '+Math.round(ev.loaded/ev.total*100)+'%';}
-},function(err){
-  status.textContent='Could not load GLB. Run the local HTTP server, and generate the model first. '+(err.message||err);
-  console.error(err);
-});
-</script>
-</body>
+      var binding = {
+        jaw: function (v) {
+          face.set_jaw_width(v);
+        },
+        eyedist: function (v) {
+          face.set_eye_spacing(v);
+          face.set_eye_size(face.esize);
+        },
+        esize: function (v) {
+          face.set_eye_size(v);
+        },
+        nosew: function (v) {
+          face.set_nose_shape(v, 1, parseFloat(document.getElementById('nosed').value));
+        },
+        nosed: function (v) {
+          face.set_nose_shape(parseFloat(document.getElementById('nosew').value), 1, v);
+        },
+        lipw: function (v) {
+          face.set_lip_shape(v, parseFloat(document.getElementById('liph').value), 1);
+        },
+        liph: function (v) {
+          face.set_lip_shape(parseFloat(document.getElementById('lipw').value), v, 1);
+        },
+        ebend: function (v) {
+          face.set_ear_shape(v, 0);
+        },
+        hairs: function (v) {
+          face.set_hair_shape(v);
+        }
+      };
+      var sliders = ['jaw', 'eyedist', 'esize', 'nosew', 'nosed', 'lipw', 'liph', 'ebend', 'hairs'];
+      var setField = function (k) {
+        var el = document.getElementById(k),
+          v = parseFloat(el.value);
+        document.getElementById(k + 'Out').textContent = v.toFixed(2);
+        if (face) {
+          binding[k](v);
+        }
+      };
+      sliders.forEach(function (k) {
+        document.getElementById(k).addEventListener('input', function () {
+          setField(k);
+        });
+      });
+      [
+        ['skc', 'set_skin'],
+        ['cl', 'set_eyes'],
+        ['hairc', 'set_hair']
+      ].forEach(function (a) {
+        document.getElementById(a[0]).addEventListener('input', function (e) {
+          if (face) {
+            face[a[1]](parseInt(e.target.value.slice(1), 16));
+          }
+        });
+      });
+      document.getElementById('reset').addEventListener('click', function () {
+        var d = {
+          jaw: 1,
+          eyedist: .58,
+          esize: 1,
+          nosew: 1,
+          nosed: 1,
+          lipw: 1,
+          liph: 1,
+          ebend: 0,
+          hairs: 1
+        };
+        Object.keys(d).forEach(function (k) {
+          document.getElementById(k).value = d[k];
+          setField(k);
+        });
+      });
+      document.getElementById('png').addEventListener('click', function () {
+        renderer.render(scene, camera);
+        var a = document.createElement('a');
+        a.download = 'face-studio.png';
+        a.href = renderer.domElement.toDataURL('image/png');
+        a.click();
+      });
+      new GLTFLoader().load('exports/photoreal_face_template.glb', function (gltf) {
+        face = new Face(gltf.scene);
+        scene.add(face);
+        status.textContent = 'Loaded Blender model · ' + gltf.scene.children.length + ' root objects · drag to rotate';
+      }, function (ev) {
+        if (ev.total) {
+          status.textContent = 'Loading geometry ' + Math.round(ev.loaded / ev.total * 100) + '%';
+        }
+      }, function (err) {
+        status.textContent = 'Could not load GLB. Run the local HTTP server, and generate the model first. ' + (err.message || err);
+        console.error(err);
+      });
+    </script>
+  </body>
 </html>
